@@ -1,40 +1,40 @@
 package com.example.apiventas.api_ventas.service;
 
-import java.util.List;
-import java.util.Optional;
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.example.apiventas.api_ventas.models.Producto;
 import com.example.apiventas.api_ventas.repository.ProductoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InventarioService {
-
+    
     @Autowired
-    private ProductoRepository repository;
-
-    public List<Producto> ListaProductos(){
-        return repository.findAll();
+    private ProductoRepository productoRepository;
+    
+    public List<Producto> listarProductos() {
+        return productoRepository.findAll();
     }
-
-    public Optional<Producto> BuscarId(Integer id){
-        return repository.findById(id);
+    
+    public Optional<Producto> buscarProductoPorId(Integer id) {
+        return productoRepository.findById(id);
     }
-
-    public Producto update(Integer id, Producto p){
-        Producto productoExiste = repository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Producto no existe" +id));
-        return repository.save(productoExiste);
+    
+    public List<Producto> buscarPorCategoria(String categoria) {
+        return productoRepository.findByCategoria(categoria);
     }
-
-    public Producto guardar(Producto producto){
-        return (Producto) repository.save(producto);
+    
+    public List<Producto> buscarPorNombre(String nombre) {
+        return productoRepository.findByNombreContainingIgnoreCase(nombre);
     }
-
-    public void eliminar(Integer id){
-        repository.deleteById(id);
+    
+    public Producto actualizarStock(Integer id, int cantidad) {
+        Producto producto = productoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        
+        producto.setStock(producto.getStock() - cantidad);
+        return productoRepository.save(producto);
     }
 }

@@ -1,24 +1,23 @@
 package com.example.apiventas.api_ventas.dto;
 
 import com.example.apiventas.api_ventas.models.Producto;
-
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 public class ProductoDTO {
     private Integer id;
-    private String name;
-    private int precio;
-    private int cantidad;
+    private String nombre;
+    private String descripcion;
+    private double precio;
+    private int stock;
+    private String categoria;
 
-    public ProductoDTO(Producto p_Producto) {
-        this.id = p_Producto.getId();
-        this.name = p_Producto.getName();
-        this.precio = p_Producto.getPrecio();
-        this.cantidad = p_Producto.getCantidad();
+    public ProductoDTO(Producto producto) {
+        this.id = producto.getId();
+        this.nombre = producto.getNombre();
+        this.descripcion = producto.getDescripcion();
+        this.precio = producto.getPrecio();
+        this.stock = producto.getStock();
+        this.categoria = producto.getCategoria();
     }
-
-    
 }

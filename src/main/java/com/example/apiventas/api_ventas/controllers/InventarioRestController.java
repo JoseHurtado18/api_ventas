@@ -1,73 +1,49 @@
 package com.example.apiventas.api_ventas.controllers;
 
 
-
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.example.apiventas.api_ventas.models.Producto;
+import com.example.apiventas.api_ventas.dto.ProductoDTO;
 import com.example.apiventas.api_ventas.service.InventarioService;
-
-import jakarta.persistence.EntityNotFoundException;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
-
-
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("api/inventario")
+@RequestMapping("/api/inventario")
 public class InventarioRestController {
-
+    
     @Autowired
-    private InventarioService service_inventario;
-
+    private InventarioService inventarioService;
+    
     @GetMapping
-    public ResponseEntity<List<Producto>> getProductos(){
-        List<Producto> productos = service_inventario.ListaProductos();
-        return new ResponseEntity<>(productos, HttpStatus.OK);
+    public ResponseEntity<List<ProductoDTO>> listarProductos() {
+        List<ProductoDTO> productos = inventarioService.listarProductos().stream()
+            .map(ProductoDTO::new)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(productos);
     }
     
-    @PostMapping
-    public ResponseEntity<Producto> add(@RequestBody Producto inProducto){
-        Producto added = service_inventario.guardar(inProducto);
-        return new ResponseEntity<>(added, HttpStatus.CREATED);
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductoDTO> obtenerProducto(@PathVariable Integer id) {
+        return inventarioService.buscarProductoPorId(id)
+            .map(producto -> ResponseEntity.ok(new ProductoDTO(producto)))
+            .orElse(ResponseEntity.notFound().build());
     }
     
-    @PutMapping("/{id}")
-    public ResponseEntity<Producto> updateProducto(@PathVariable("id") Integer id, @RequestBody Producto producto){
-        Optional<Producto> productoExiste = service_inventario.BuscarId(id);
-        if(productoExiste.isPresent()){
-            Producto actualizado = productoExiste.get();
-            actualizado.setName(producto.getName());
-            actualizado.setPrecio(producto.getPrecio());
-            actualizado.setCantidad(producto.getCantidad());
-            return new ResponseEntity<>(service_inventario.guardar(actualizado), HttpStatus.OK);
-            
-        }else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @GetMapping("/categoria/{categoria}")
+    public ResponseEntity<List<ProductoDTO>> buscarPorCategoria(@PathVariable String categoria) {
+        List<ProductoDTO> productos = inventarioService.buscarPorCategoria(categoria).stream()
+            .map(ProductoDTO::new)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(productos);
     }
     
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProducto(@PathVariable("id") Integer id){
-        try{
-            service_inventario.eliminar(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e){
-            return ResponseEntity.notFound().build();
-        }
-    }    
+    @GetMapping("/buscar")
+    public ResponseEntity<List<ProductoDTO>> buscarPorNombre(@RequestParam String nombre) {
+        List<ProductoDTO> productos = inventarioService.buscarPorNombre(nombre).stream()
+            .map(ProductoDTO::new)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(productos);
+    }
 }

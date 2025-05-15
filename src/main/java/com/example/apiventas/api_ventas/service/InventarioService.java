@@ -37,4 +37,30 @@ public class InventarioService {
         producto.setStock(producto.getStock() - cantidad);
         return productoRepository.save(producto);
     }
+
+    public Producto guardarProducto(Producto producto) {
+        return productoRepository.save(producto);
+    }
+
+    public Producto actualizarProducto(Integer id, Producto productoActualizado) {
+        Producto productoExistente = productoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        productoExistente.setNombre(productoActualizado.getNombre());
+        productoExistente.setCategoria(productoActualizado.getCategoria());
+        productoExistente.setDescripcion(productoActualizado.getDescripcion());
+        productoExistente.setPrecio(productoActualizado.getPrecio());
+        productoExistente.setStock(productoActualizado.getStock());
+
+        return productoRepository.save(productoExistente);
+    }
+
+    public void eliminarProducto(Integer id) {
+        if (!productoRepository.existsById(id)) {
+            throw new RuntimeException("Producto no encontrado");
+        }
+        productoRepository.deleteById(id);
+    }
+
+    
 }

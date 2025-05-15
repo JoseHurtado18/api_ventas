@@ -1,6 +1,10 @@
 package com.example.apiventas.api_ventas.controllers;
 
 import com.example.apiventas.api_ventas.service.VentaService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.example.apiventas.api_ventas.dto.*;
 import com.example.apiventas.api_ventas.models.Venta;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +15,13 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/ventas")
+@Tag(name = "Ventas", description = "Operaciones relacionadas con el procesamiento de ventas")
 public class VentaRestController {
     
     @Autowired
     private VentaService ventaService;
     
+    @Operation(summary = "Crear una nueva venta")
     @PostMapping
     public ResponseEntity<VentaDTO> crearVenta(
             @RequestParam("cliente") String cliente,
@@ -25,6 +31,7 @@ public class VentaRestController {
         return ResponseEntity.ok(convertirAVentaDTO(venta));
     }
     
+    @Operation(summary = "Listar ventas por cliente")
     @GetMapping("/cliente/{cliente}")
     public ResponseEntity<List<VentaDTO>> listarVentasPorCliente(@PathVariable("cliente") String cliente) {
         List<VentaDTO> ventas = ventaService.listarVentasPorCliente(cliente).stream()
@@ -33,6 +40,7 @@ public class VentaRestController {
         return ResponseEntity.ok(ventas);
     }
     
+    @Operation(summary = "Obtener una venta por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<VentaDTO> obtenerVenta(@PathVariable("id") Integer id) {
         return ventaService.obtenerVenta(id)

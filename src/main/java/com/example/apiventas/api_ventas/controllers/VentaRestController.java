@@ -8,7 +8,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import com.example.apiventas.api_ventas.dto.*;
 import com.example.apiventas.api_ventas.models.Venta;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,11 +25,11 @@ public class VentaRestController {
     
     @Operation(summary = "Crear una nueva venta")
     @PostMapping
-    public ResponseEntity<VentaDTO> crearVenta(
-            @RequestParam("cliente") String cliente,
-            @RequestBody List<CarritoItemDTO> items) {
+    public ResponseEntity<VentaDTO> crearVenta(@RequestBody List<CarritoItemDTO> items) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String clienteId = authentication.getName();
         
-        Venta venta = ventaService.procesarVenta(cliente, items);
+        Venta venta = ventaService.procesarVenta(clienteId, items);
         return ResponseEntity.ok(convertirAVentaDTO(venta));
     }
     

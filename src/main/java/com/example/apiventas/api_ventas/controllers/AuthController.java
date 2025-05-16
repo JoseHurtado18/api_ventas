@@ -18,13 +18,12 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @Operation(summary = "Login de cliente")
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequest) {
-        boolean loginExitoso = authService.autenticarCliente(loginRequest.getEmail(), loginRequest.getPassword());
-        if (loginExitoso) {
-            return ResponseEntity.ok("Login exitoso");
-        } else {
+        try {
+            String token = authService.autenticarClienteYGenerarToken(loginRequest.getEmail(), loginRequest.getPassword());
+            return ResponseEntity.ok(token);
+        } catch (RuntimeException e) {
             return ResponseEntity.status(401).body("Credenciales inválidas");
         }
     }

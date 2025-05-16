@@ -1,5 +1,6 @@
 package com.example.apiventas.api_ventas.service;
 
+import com.example.apiventas.api_ventas.config.JwtUtil;
 import com.example.apiventas.api_ventas.dto.RegistroClienteDTO;
 import com.example.apiventas.api_ventas.models.Cliente;
 import com.example.apiventas.api_ventas.repository.ClienteRepository;
@@ -12,14 +13,17 @@ import java.util.Optional;
 @Service
 public class AuthService {
 
+    private final JwtUtil jwtUtil;
+
   @Autowired
   private ClienteRepository clienteRepository;
 
   @Autowired
   private BCryptPasswordEncoder passwordEncoder;
 
-    AuthService(ClienteRepository clienteRepository) {
+    AuthService(ClienteRepository clienteRepository, JwtUtil jwtUtil) {
         this.clienteRepository = clienteRepository;
+        this.jwtUtil = jwtUtil;
     }
 
   public Cliente registrarCliente(RegistroClienteDTO dto) {
@@ -35,8 +39,11 @@ public class AuthService {
       return clienteRepository.save(cliente);
   }
 
-  public boolean autenticarCliente(String email, String password) {
-      Optional<Cliente> cliente = clienteRepository.findByEmail(email);
-      return cliente.isPresent() && passwordEncoder.matches(password, cliente.get().getPassword());
-  }
+    public String autenticarClienteYGenerarToken(String email, String password) {
+        Optional<Cliente> cliente = clienteRepository.findByEmail(email);
+        if (cliente.isPresent() && passwordEncoder.matches(password, cliente.get().getPassword())) {
+            return jwtUtil.generateToken(email, cliente.get().getId());  // 👉 pasamos el ID
+        }
+        throw new RuntimeException("Credenciales inválidas");
+    }
 }

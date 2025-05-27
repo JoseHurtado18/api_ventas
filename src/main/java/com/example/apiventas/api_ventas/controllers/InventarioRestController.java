@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import com.example.apiventas.api_ventas.dto.ProductoDTO;
 import com.example.apiventas.api_ventas.models.Producto;
+import com.example.apiventas.api_ventas.service.AlertaService;
 import com.example.apiventas.api_ventas.service.InventarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,8 @@ public class InventarioRestController {
     
     @Autowired
     private InventarioService inventarioService;
+    private AlertaService alertaService;
+
     
     @Operation(summary = "Listar todos los productos del inventario")
     @GetMapping
@@ -74,4 +77,15 @@ public class InventarioRestController {
         inventarioService.eliminarProducto(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Listar productos con stock bajo")
+    @GetMapping("/alertas/stock-bajo")
+    public ResponseEntity<List<ProductoDTO>> obtenerProductosConStockBajo() {
+        List<ProductoDTO> productos = alertaService.obtenerProductosConBajoStock()
+                .stream()
+                .map(ProductoDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(productos);
+    }
+
 }

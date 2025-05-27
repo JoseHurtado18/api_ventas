@@ -20,6 +20,7 @@ public class Producto {
     private String descripcion;
     private double precio;
     private int stock;
+    private int stockMinimo;
     private String categoria;
 
     public Producto() {
@@ -32,6 +33,7 @@ public class Producto {
         this.categoria = dto.getCategoria();
         this.precio = dto.getPrecio();
         this.stock = dto.getStock();
+        this.stockMinimo = dto.getStockMinimo();
     
     }
 }

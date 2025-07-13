@@ -17,4 +17,6 @@ public class AlertaService {
     public List<Producto> obtenerProductosConBajoStock() {
         return productoRepository.findByStockLessThanEqual(10);
     }
+
+    
 }

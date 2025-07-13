@@ -45,6 +45,8 @@ public class VentaService {
             if (producto.getStock() < item.getCantidad()) {
                 throw new RuntimeException("Stock insuficiente para: " + producto.getNombre());
             }
+
+
             
             DetalleVenta detalle = new DetalleVenta();
             detalle.setVenta(ventaGuardada);

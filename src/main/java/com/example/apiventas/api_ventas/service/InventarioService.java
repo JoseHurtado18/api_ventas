@@ -14,6 +14,9 @@ public class InventarioService {
     
     @Autowired
     private ProductoRepository productoRepository;
+
+    @Autowired
+    private RequesicionesApiService requesicionesApiService;
     
     public List<Producto> listarProductos() {
         return productoRepository.findAll();
@@ -36,6 +39,12 @@ public class InventarioService {
             .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
         
         producto.setStock(producto.getStock() - cantidad);
+
+        //disparar alerta 
+        if (producto.getStock() <= 10){
+            requesicionesApiService.postAlerta(producto.getNombre(), "100");
+        }
+
         return productoRepository.save(producto);
     }
 

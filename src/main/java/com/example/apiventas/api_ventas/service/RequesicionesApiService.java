@@ -38,7 +38,8 @@ public class RequesicionesApiService {
     } */
 
     public String postAlerta(String nombre, String cantidad){
-        String url = "https://api.externa.com/post-endpoint";
+        
+        String url = "";
 
         Map<String, String> request = new HashMap<>();
         request.put("nombre", nombre);

@@ -38,12 +38,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
+            .requestMatchers(
+                    "/.well-known/acme-challenge/**",
                     "/api/auth/**",
                     "/v3/api-docs/**",
                     "/swagger-ui/**",
-                    "/swagger-ui.html",
-                    "/.well-known/acme-challenge/**"
+                    "/swagger-ui.html"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

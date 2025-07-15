@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @RestController
@@ -75,5 +78,13 @@ public class InventarioRestController {
         inventarioService.eliminarProducto(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary =  "Gestionar nuevo stock")
+    @PutMapping("/recepcionStock")
+    public ResponseEntity<String> newStock(@RequestBody List<Producto> productos) {
+        inventarioService.nuevoStock(productos);
+        return ResponseEntity.ok("nuevo stock agregado correctamente");
+    }
+    
 
 }

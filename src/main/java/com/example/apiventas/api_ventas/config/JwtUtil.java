@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
-import java.util.Map;
 
 @Component
 public class JwtUtil {
@@ -15,26 +14,27 @@ public class JwtUtil {
     private final Key key = Keys.hmacShaKeyFor("clave-secreta-muy-larga-para-firmar-token".getBytes(StandardCharsets.UTF_8));
     private final long expirationMs = 3600000; // 1 hora
 
-    public String generateToken(String username) {
+    public String generateToken(String username, String role, Integer id) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("role", role)
+                .claim("id", id) // opcional
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(key)
                 .compact();
     }
 
-    public String generateToken(String username, Integer clienteId) {
-    return Jwts.builder()
-            .setClaims(Map.of("clienteId", clienteId))
-            .setSubject(username)
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
-            .signWith(key)
-            .compact();
+
+    public String extractRole(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.get("role", String.class);
     }
-
-
+    
     public String extractUsername(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)

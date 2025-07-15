@@ -13,25 +13,23 @@ import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-
 @RestController
 @RequestMapping("/api/inventario")
 @Tag(name = "Inventario", description = "Operaciones relacionadas con productos del inventario")
 public class InventarioRestController {
-    
+
     @Autowired
     private InventarioService inventarioService;
-    
+
     @Operation(summary = "Listar todos los productos del inventario")
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<ProductoDTO>> listarProductos() {
         List<ProductoDTO> productos = inventarioService.listarProductos().stream()
             .map(ProductoDTO::new)
             .collect(Collectors.toList());
         return ResponseEntity.ok(productos);
     }
-    
+
     @Operation(summary = "Obtener un producto por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<ProductoDTO> obtenerProducto(@PathVariable("id") Integer id) {
@@ -39,7 +37,7 @@ public class InventarioRestController {
             .map(producto -> ResponseEntity.ok(new ProductoDTO(producto)))
             .orElse(ResponseEntity.notFound().build());
     }
-    
+
     @Operation(summary = "Buscar productos por categoría")
     @GetMapping("/categoria/{categoria}")
     public ResponseEntity<List<ProductoDTO>> buscarPorCategoria(@PathVariable("categoria") String categoria) {
@@ -48,7 +46,7 @@ public class InventarioRestController {
             .collect(Collectors.toList());
         return ResponseEntity.ok(productos);
     }
-    
+
     @Operation(summary = "Buscar productos por nombre")
     @GetMapping("/buscar")
     public ResponseEntity<List<ProductoDTO>> buscarPorNombre(@RequestParam("buscar") String nombre) {
@@ -59,7 +57,7 @@ public class InventarioRestController {
     }
 
     @Operation(summary = "Crear un nuevo producto")
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<ProductoDTO> crearProducto(@RequestBody ProductoDTO dto) {
         Producto nuevo = inventarioService.guardarProducto(new Producto(dto));
         return ResponseEntity.ok(new ProductoDTO(nuevo));
@@ -79,12 +77,10 @@ public class InventarioRestController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary =  "Gestionar nuevo stock")
+    @Operation(summary = "Gestionar nuevo stock")
     @PutMapping("/recepcionStock")
     public ResponseEntity<String> newStock(@RequestBody List<Producto> productos) {
         inventarioService.nuevoStock(productos);
         return ResponseEntity.ok("nuevo stock agregado correctamente");
     }
-    
-
 }

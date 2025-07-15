@@ -16,40 +16,41 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/ventas")
+@RequestMapping("/api")
 @Tag(name = "Ventas", description = "Operaciones relacionadas con el procesamiento de ventas")
 public class VentaRestController {
-    
+
     @Autowired
     private VentaService ventaService;
-    
+
     @Operation(summary = "Crear una nueva venta")
-    @PostMapping
+    @PostMapping("/cliente/venta")
     public ResponseEntity<VentaDTO> crearVenta(@RequestBody List<CarritoItemDTO> items) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String clienteId = authentication.getName();
-        
+
         Venta venta = ventaService.procesarVenta(clienteId, items);
         return ResponseEntity.ok(convertirAVentaDTO(venta));
     }
-    
+
     @Operation(summary = "Listar ventas por cliente")
-    @GetMapping("/cliente/{cliente}")
+    @GetMapping("/cliente/venta/{cliente}")
     public ResponseEntity<List<VentaDTO>> listarVentasPorCliente(@PathVariable("cliente") String cliente) {
         List<VentaDTO> ventas = ventaService.listarVentasPorCliente(cliente).stream()
             .map(this::convertirAVentaDTO)
             .collect(Collectors.toList());
         return ResponseEntity.ok(ventas);
     }
-    
+
     @Operation(summary = "Obtener una venta por su ID")
-    @GetMapping("/{id}")
+    @GetMapping("/admin/venta/{id}")
     public ResponseEntity<VentaDTO> obtenerVenta(@PathVariable("id") Integer id) {
         return ventaService.obtenerVenta(id)
             .map(venta -> ResponseEntity.ok(convertirAVentaDTO(venta)))
             .orElse(ResponseEntity.notFound().build());
     }
-    
+
+    // método reutilizable
     private VentaDTO convertirAVentaDTO(Venta venta) {
         List<DetalleVentaDTO> detallesDTO = venta.getDetalles().stream()
             .map(detalle -> {
@@ -62,7 +63,7 @@ public class VentaRestController {
                 return dto;
             })
             .collect(Collectors.toList());
-        
+
         VentaDTO dto = new VentaDTO();
         dto.setId(venta.getId());
         dto.setCliente(venta.getCliente());
@@ -70,7 +71,7 @@ public class VentaRestController {
         dto.setEstado(venta.getEstado());
         dto.setTotal(venta.getTotal());
         dto.setDetalles(detallesDTO);
-        
+
         return dto;
     }
 }

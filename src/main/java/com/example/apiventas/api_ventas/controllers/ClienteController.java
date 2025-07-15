@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/clientes")
+@RequestMapping("/api")
 @Tag(name = "Clientes", description = "Operaciones relacionadas con la gestión de clientes")
 public class ClienteController {
 
@@ -21,7 +21,7 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @Operation(summary = "Listar todos los clientes")
-    @GetMapping
+    @GetMapping("/admin/clientes")
     public ResponseEntity<List<ClienteDTO>> listarClientes() {
         List<ClienteDTO> clientes = clienteService.listarClientes().stream()
                 .map(ClienteDTO::new)
@@ -30,7 +30,7 @@ public class ClienteController {
     }
 
     @Operation(summary = "Obtener un cliente por ID")
-    @GetMapping("/{id}")
+    @GetMapping("/clientes/{id}")
     public ResponseEntity<ClienteDTO> obtenerClientePorId(@PathVariable("id") Integer id) {
         return clienteService.obtenerClientePorId(id)
                 .map(cliente -> ResponseEntity.ok(new ClienteDTO(cliente)))
@@ -38,14 +38,14 @@ public class ClienteController {
     }
 
     @Operation(summary = "Actualizar un cliente")
-    @PutMapping("/{id}")
+    @PutMapping("/clientes/{id}")
     public ResponseEntity<ClienteDTO> actualizarCliente(@PathVariable("id") Integer id, @RequestBody ClienteDTO dto) {
         Cliente actualizado = clienteService.actualizarCliente(id, new Cliente(dto));
         return ResponseEntity.ok(new ClienteDTO(actualizado));
     }
 
     @Operation(summary = "Eliminar un cliente por ID")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/clientes/{id}")
     public ResponseEntity<Void> eliminarCliente(@PathVariable("id") Integer id) {
         clienteService.eliminarCliente(id);
         return ResponseEntity.noContent().build();

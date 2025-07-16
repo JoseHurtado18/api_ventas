@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/inventario")
+@RequestMapping("/api")
 @Tag(name = "Inventario", description = "Operaciones relacionadas con productos del inventario")
 public class InventarioRestController {
 
@@ -22,7 +22,7 @@ public class InventarioRestController {
     private InventarioService inventarioService;
 
     @Operation(summary = "Listar todos los productos del inventario")
-    @GetMapping("")
+    @GetMapping("/inventario")
     public ResponseEntity<List<ProductoDTO>> listarProductos() {
         List<ProductoDTO> productos = inventarioService.listarProductos().stream()
             .map(ProductoDTO::new)
@@ -31,7 +31,7 @@ public class InventarioRestController {
     }
 
     @Operation(summary = "Obtener un producto por su ID")
-    @GetMapping("/{id}")
+    @GetMapping("/inventario/{id}")
     public ResponseEntity<ProductoDTO> obtenerProducto(@PathVariable("id") Integer id) {
         return inventarioService.buscarProductoPorId(id)
             .map(producto -> ResponseEntity.ok(new ProductoDTO(producto)))
@@ -39,7 +39,7 @@ public class InventarioRestController {
     }
 
     @Operation(summary = "Buscar productos por categoría")
-    @GetMapping("/categoria/{categoria}")
+    @GetMapping("/inventario/categoria/{categoria}")
     public ResponseEntity<List<ProductoDTO>> buscarPorCategoria(@PathVariable("categoria") String categoria) {
         List<ProductoDTO> productos = inventarioService.buscarPorCategoria(categoria).stream()
             .map(ProductoDTO::new)
@@ -48,7 +48,7 @@ public class InventarioRestController {
     }
 
     @Operation(summary = "Buscar productos por nombre")
-    @GetMapping("/buscar")
+    @GetMapping("/inventario/buscar")
     public ResponseEntity<List<ProductoDTO>> buscarPorNombre(@RequestParam("buscar") String nombre) {
         List<ProductoDTO> productos = inventarioService.buscarPorNombre(nombre).stream()
             .map(ProductoDTO::new)
@@ -57,7 +57,7 @@ public class InventarioRestController {
     }
 
     @Operation(summary = "Crear un nuevo producto")
-    @PostMapping("")
+    @PostMapping("admin/inventario")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
         description = "Datos para registrar un nuevo producto de tipo sierra en el inventario",
         required = true,
@@ -82,7 +82,7 @@ public class InventarioRestController {
     }
 
     @Operation(summary = "Actualizar un producto existente")
-    @PutMapping("/{id}")
+    @PutMapping("/inventario/{id}")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
         description = "Datos para actualizar un producto existente en el inventario",
         required = true,
@@ -107,14 +107,14 @@ public class InventarioRestController {
     }
 
     @Operation(summary = "Eliminar un producto por su ID")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/inventario/{id}")
     public ResponseEntity<Void> eliminarProducto(@PathVariable("id") Integer id) {
         inventarioService.eliminarProducto(id);
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Gestionar nuevo stock")
-    @PutMapping("/recepcionStock")
+    @PutMapping("/inventario/recepcionStock")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
         description = "Lista de productos con código y stock para actualizar",
         required = true,

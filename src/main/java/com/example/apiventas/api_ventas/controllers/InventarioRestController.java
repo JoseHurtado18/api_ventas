@@ -22,7 +22,7 @@ public class InventarioRestController {
     private InventarioService inventarioService;
 
     @Operation(summary = "Listar todos los productos del inventario")
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<ProductoDTO>> listarProductos() {
         List<ProductoDTO> productos = inventarioService.listarProductos().stream()
             .map(ProductoDTO::new)
@@ -57,7 +57,7 @@ public class InventarioRestController {
     }
 
     @Operation(summary = "Crear un nuevo producto")
-    @PostMapping("/")
+    @PostMapping("")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
         description = "Datos para registrar un nuevo producto de tipo sierra en el inventario",
         required = true,

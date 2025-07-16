@@ -16,6 +16,7 @@ public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private String codigo;
     private String nombre;
     private String descripcion;
     private double precio;
@@ -28,12 +29,12 @@ public class Producto {
 
     public Producto(ProductoDTO dto) {
         this.id = dto.getId();
+        this.codigo = dto.getCodigo();
         this.nombre = dto.getNombre();
         this.descripcion = dto.getDescripcion();
         this.categoria = dto.getCategoria();
         this.precio = dto.getPrecio();
         this.stock = dto.getStock();
         this.stockMinimo = dto.getStockMinimo();
-    
     }
 }

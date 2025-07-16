@@ -49,12 +49,13 @@ public class InventarioService {
     }
 
     //funcion para adiccionar el stock que llega por parte de despacho
-    public void nuevoStock(List<Producto> productos){
-        for(Producto producto : productos){
-            productoRepository.findById(producto.getId()).ifPresent(p ->{
-                p.setStock(p.getStock() + producto.getStock());
-                productoRepository.save(p);
-            });
+    public void nuevoStock(List<Producto> productos) {
+        for (Producto producto : productos) {
+            Producto existente = productoRepository.findByCodigo(producto.getCodigo());
+            if (existente != null) {
+                existente.setStock(existente.getStock() + producto.getStock());
+                productoRepository.save(existente);
+            }
         }
     }
 

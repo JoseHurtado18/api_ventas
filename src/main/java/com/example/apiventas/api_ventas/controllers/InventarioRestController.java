@@ -1,6 +1,8 @@
 package com.example.apiventas.api_ventas.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import com.example.apiventas.api_ventas.dto.ProductoDTO;
 import com.example.apiventas.api_ventas.models.Producto;
@@ -10,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/inventario")
@@ -79,6 +79,21 @@ public class InventarioRestController {
 
     @Operation(summary = "Gestionar nuevo stock")
     @PutMapping("/recepcionStock")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Lista de productos con código y stock para actualizar",
+        required = true,
+        content = @Content(
+            mediaType = "application/json",
+            examples = @ExampleObject(
+                value = "[\n" +
+                        "  {\n" +
+                        "    \"codigo\": \"PL-001\",\n" +
+                        "    \"stock\": 25\n" +
+                        "  }" +
+                        "]"
+            )
+        )
+    )
     public ResponseEntity<String> newStock(@RequestBody List<Producto> productos) {
         inventarioService.nuevoStock(productos);
         return ResponseEntity.ok("nuevo stock agregado correctamente");

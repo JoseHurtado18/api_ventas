@@ -33,7 +33,7 @@ public class AuthController {
     }
 
     @Operation(summary = "Registro de cliente")
-    @PostMapping("/cliente/register")
+    @PostMapping("/registrarse")
     public ResponseEntity<Cliente> registrarCliente(@RequestBody RegistroClienteDTO dto) {
         try {
             Cliente nuevo = authService.registrarCliente(dto);
@@ -44,7 +44,7 @@ public class AuthController {
     }
 
     @Operation(summary = "Registro de administrador")
-    @PostMapping("/admin/register")
+    @PostMapping("/admin/registrar")
     public ResponseEntity<Admin> registrarAdmin(@RequestBody RegistroAdminDTO dto) {
         try {
             Admin nuevo = authService.registrarAdmin(dto);

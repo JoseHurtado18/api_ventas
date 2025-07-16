@@ -9,9 +9,11 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.servers.Server;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import java.util.List;
 
 @Configuration
 public class OpenApiConfig {
@@ -20,7 +22,12 @@ public class OpenApiConfig {
     public OpenAPI apiInfo() {
         final String securitySchemeName = "bearerAuth";
 
+
+        Server server = new Server();
+        server.setUrl("https://api-ventas.duckdns.org");
+        
         return new OpenAPI()
+                .servers(List.of(server))
                 .info(new Info()
                         .title("API Ventas")
                         .description("API REST para gestión de ventas e inventario")

@@ -25,6 +25,10 @@ public class InventarioService {
     public Optional<Producto> buscarProductoPorId(Integer id) {
         return productoRepository.findById(id);
     }
+
+    public Optional<Producto> buscarProductoPorCodigo(String codigo) {
+        return productoRepository.findByCodigo(codigo);
+    }
     
     public List<Producto> buscarPorCategoria(String categoria) {
         return productoRepository.findByCategoria(categoria);
@@ -48,14 +52,13 @@ public class InventarioService {
         return productoRepository.save(producto);
     }
 
-    //funcion para adiccionar el stock que llega por parte de despacho
     public void nuevoStock(List<Producto> productos) {
         for (Producto producto : productos) {
-            Producto existente = productoRepository.findByCodigo(producto.getCodigo());
-            if (existente != null) {
-                existente.setStock(existente.getStock() + producto.getStock());
-                productoRepository.save(existente);
-            }
+            productoRepository.findByCodigo(producto.getCodigo())
+                .ifPresent(existente -> {
+                    existente.setStock(existente.getStock() + producto.getStock());
+                    productoRepository.save(existente);
+                });
         }
     }
 

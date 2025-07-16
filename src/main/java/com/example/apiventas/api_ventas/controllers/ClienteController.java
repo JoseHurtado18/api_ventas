@@ -4,6 +4,8 @@ import com.example.apiventas.api_ventas.dto.ClienteDTO;
 import com.example.apiventas.api_ventas.models.Cliente;
 import com.example.apiventas.api_ventas.service.ClienteService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
+    
     @Operation(summary = "Listar todos los clientes")
     @GetMapping("/admin/clientes")
     public ResponseEntity<List<ClienteDTO>> listarClientes() {
@@ -39,6 +42,19 @@ public class ClienteController {
 
     @Operation(summary = "Actualizar un cliente")
     @PutMapping("/clientes/{id}")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Datos para actualizar un cliente",
+        required = true,
+        content = @Content(
+            mediaType = "application/json",
+            examples = @ExampleObject(
+                value = "{\n" +
+                        "  \"nombre\": \"Laura Fernández\",\n" +
+                        "  \"email\": \"laura.fernandez@example.com\"\n" +
+                        "}"
+            )
+        )
+    )
     public ResponseEntity<ClienteDTO> actualizarCliente(@PathVariable("id") Integer id, @RequestBody ClienteDTO dto) {
         Cliente actualizado = clienteService.actualizarCliente(id, new Cliente(dto));
         return ResponseEntity.ok(new ClienteDTO(actualizado));

@@ -3,6 +3,8 @@ package com.example.apiventas.api_ventas.controllers;
 import com.example.apiventas.api_ventas.service.VentaService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import com.example.apiventas.api_ventas.dto.*;
@@ -25,6 +27,26 @@ public class VentaRestController {
 
     @Operation(summary = "Crear una nueva venta")
     @PostMapping("/cliente/venta")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Lista de productos a vender, incluyendo el código y la cantidad de cada uno",
+        required = true,
+        content = @Content(
+            mediaType = "application/json",
+            examples = @ExampleObject(
+                value = "[\n" +
+                        "  {\n" +
+                        "    \"codigoProducto\": \"CU-002-001\",\n" +
+                        "    \"cantidad\": 2\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"codigoProducto\": \"CU-001-002\",\n" +
+                        "    \"cantidad\": 1\n" +
+                        "  }\n" +
+                        "]"
+            )
+        )
+    )
+
     public ResponseEntity<VentaDTO> crearVenta(@RequestBody List<CarritoItemDTO> items) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String clienteId = authentication.getName();
@@ -33,12 +55,16 @@ public class VentaRestController {
         return ResponseEntity.ok(convertirAVentaDTO(venta));
     }
 
-    @Operation(summary = "Listar ventas por cliente")
-    @GetMapping("/cliente/venta/{cliente}")
-    public ResponseEntity<List<VentaDTO>> listarVentasPorCliente(@PathVariable("cliente") String cliente) {
-        List<VentaDTO> ventas = ventaService.listarVentasPorCliente(cliente).stream()
+    @Operation(summary = "Listar ventas del cliente")
+    @GetMapping("/cliente/venta")
+    public ResponseEntity<List<VentaDTO>> listarVentasPorCliente() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String clienteId = authentication.getName();
+
+        List<VentaDTO> ventas = ventaService.listarVentasPorCliente(clienteId).stream()
             .map(this::convertirAVentaDTO)
             .collect(Collectors.toList());
+
         return ResponseEntity.ok(ventas);
     }
 
@@ -56,6 +82,7 @@ public class VentaRestController {
             .map(detalle -> {
                 DetalleVentaDTO dto = new DetalleVentaDTO();
                 dto.setProductoId(detalle.getProducto().getId());
+                dto.setCodigoProducto(detalle.getProducto().getCodigo());
                 dto.setProductoNombre(detalle.getProducto().getNombre());
                 dto.setCantidad(detalle.getCantidad());
                 dto.setPrecioUnitario(detalle.getPrecioUnitario());

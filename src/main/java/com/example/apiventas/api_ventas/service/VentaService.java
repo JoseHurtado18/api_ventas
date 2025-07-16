@@ -39,8 +39,8 @@ public class VentaService {
         double total = 0.0;
         
         for (CarritoItemDTO item : items) {
-            Producto producto = inventarioService.buscarProductoPorId(item.getProductoId())
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado: " + item.getProductoId()));
+            Producto producto = inventarioService.buscarProductoPorCodigo(item.getCodigoProducto())
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado: " + item.getCodigoProducto()));
             
             if (producto.getStock() < item.getCantidad()) {
                 throw new RuntimeException("Stock insuficiente para: " + producto.getNombre());

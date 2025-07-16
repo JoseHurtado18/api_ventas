@@ -58,6 +58,24 @@ public class InventarioRestController {
 
     @Operation(summary = "Crear un nuevo producto")
     @PostMapping("/")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Datos para registrar un nuevo producto de tipo sierra en el inventario",
+        required = true,
+        content = @Content(
+            mediaType = "application/json",
+            examples = @ExampleObject(
+                value = "{\n" +
+                        "  \"codigo\": \"CU-002-001\",\n" +
+                        "  \"nombre\": \"Sierra Hidráulica de Alta Precisión\",\n" +
+                        "  \"descripcion\": \"Sierra hidráulica ideal para cortes industriales en acero\",\n" +
+                        "  \"precio\": 850000,\n" +
+                        "  \"stock\": 12,\n" +
+                        "  \"categoria\": \"Sierras Hidráulicas\",\n" +
+                        "  \"stockMinimo\": 3\n" +
+                        "}"
+            )
+        )
+    )
     public ResponseEntity<ProductoDTO> crearProducto(@RequestBody ProductoDTO dto) {
         Producto nuevo = inventarioService.guardarProducto(new Producto(dto));
         return ResponseEntity.ok(new ProductoDTO(nuevo));
@@ -65,6 +83,24 @@ public class InventarioRestController {
 
     @Operation(summary = "Actualizar un producto existente")
     @PutMapping("/{id}")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Datos para actualizar un producto existente en el inventario",
+        required = true,
+        content = @Content(
+            mediaType = "application/json",
+            examples = @ExampleObject(
+                value = "{\n" +
+                        "  \"codigo\": \"CU-002-001\",\n" +
+                        "  \"nombre\": \"Sierra Hidráulica de Corte Rápido\",\n" +
+                        "  \"descripcion\": \"Sierra hidráulica optimizada para cortes industriales de alta velocidad\",\n" +
+                        "  \"precio\": 950000,\n" +
+                        "  \"stock\": 18,\n" +
+                        "  \"categoria\": \"Sierras Hidráulicas\",\n" +
+                        "  \"stockMinimo\": 5\n" +
+                        "}"
+            )
+        )
+    )
     public ResponseEntity<ProductoDTO> actualizarProducto(@PathVariable Integer id, @RequestBody ProductoDTO dto) {
         Producto actualizado = inventarioService.actualizarProducto(id, new Producto(dto));
         return ResponseEntity.ok(new ProductoDTO(actualizado));
@@ -72,7 +108,7 @@ public class InventarioRestController {
 
     @Operation(summary = "Eliminar un producto por su ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarProducto(@PathVariable Integer id) {
+    public ResponseEntity<Void> eliminarProducto(@PathVariable("id") Integer id) {
         inventarioService.eliminarProducto(id);
         return ResponseEntity.noContent().build();
     }

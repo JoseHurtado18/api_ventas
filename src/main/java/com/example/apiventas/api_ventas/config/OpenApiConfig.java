@@ -24,7 +24,7 @@ public class OpenApiConfig {
 
 
         Server server = new Server();
-        server.setUrl("http://localhost:8080");
+        server.setUrl("https://api-ventas.duckdns.org");
         
         return new OpenAPI()
                 .servers(List.of(server))

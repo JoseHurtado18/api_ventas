@@ -87,7 +87,7 @@ public class InventarioRestController {
             examples = @ExampleObject(
                 value = "[\n" +
                         "  {\n" +
-                        "    \"codigo\": \"PL-001\",\n" +
+                        "    \"codigo\": \"CU-001-001\",\n" +
                         "    \"stock\": 25\n" +
                         "  }" +
                         "]"
